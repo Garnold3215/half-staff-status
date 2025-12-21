@@ -1,3 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Flag Status</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 10px;
+      font-family: Arial, Helvetica, sans-serif;
+      background: transparent;
+    }
+
+    #flag-status {
+      line-height: 1.35;
+
+      /* RESPONSIVE TEXT SIZE */
+      font-size: clamp(18px, 4vw, 36px);
+    }
+
+    #flag-status strong {
+      font-weight: 700;
+    }
+
+    #flag-status hr {
+      border: 0;
+      border-top: 2px solid #ccc;
+      margin: 0.6em 0;
+    }
+  </style>
+</head>
+
+<body>
+
 <div id="flag-status">Loading flag status…</div>
 
 <script>
@@ -5,48 +41,41 @@
   const res = await fetch("./status.json", { cache: "no-store" });
   const data = await res.json();
 
-  const us = data.us;
-  const fl = data.florida;
+  const us = data.us || { status: "UNKNOWN" };
+  const fl = data.florida || { status: "UNKNOWN" };
 
   function formatDates(start, end) {
     if (!start && !end) return "";
-    if (start && end && start === end) return ` (${start})`;
-    if (start && end) return ` (${start} → ${end})`;
+    if (start && end && start === end) {
+      return `<br><strong>Date:</strong> ${start}`;
+    }
+    if (start && end) {
+      return `<br><strong>Dates:</strong> ${start} → ${end}`;
+    }
+    if (start) return `<br><strong>Starts:</strong> ${start}`;
+    if (end) return `<br><strong>Ends:</strong> ${end}`;
     return "";
   }
 
-  let html = `<strong>US FLAG:</strong> ${us.status}`;
-  if (us.status === "HALF STAFF") {
-    if (us.reason) html += `<br><strong>Reason:</strong> ${us.reason}`;
-    html += formatDates(us.start, us.end);
+  function render(label, obj) {
+    let html = `<strong>${label}:</strong> ${obj.status}`;
+
+    if (obj.status === "HALF STAFF") {
+      if (obj.reason) {
+        html += `<br><strong>Reason:</strong> ${obj.reason}`;
+      }
+      html += formatDates(obj.start, obj.end);
+    }
+
+    return html;
   }
 
-  html += `<hr style="border:0;border-top:1px solid #ccc;margin:10px 0;">`;
-
-  html += `<strong>FL FLAG:</strong> ${fl.status}`;
-  if (fl.status === "HALF STAFF") {
-    if (fl.reason) html += `<br><strong>Reason:</strong> ${fl.reason}`;
-    html += formatDates(fl.start, fl.end);
-  }
-
-  document.getElementById("flag-status").innerHTML = html;
+  document.getElementById("flag-status").innerHTML =
+    render("US FLAG", us) +
+    `<hr>` +
+    render("FL FLAG", fl);
 })();
 </script>
 
-<script>
-function sendHeight() {
-  const height = document.documentElement.scrollHeight;
-  parent.postMessage(
-    { type: "halfstaff-resize", height },
-    "*"
-  );
-}
-
-// send once on load
-window.addEventListener("load", sendHeight);
-
-// send again if content changes
-const observer = new MutationObserver(sendHeight);
-observer.observe(document.body, { childList: true, subtree: true });
-</script>
-
+</body>
+</html>
