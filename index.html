@@ -9,16 +9,12 @@
   const fl = data.florida;
 
   let html = `<strong>US FLAG:</strong> ${us.status}`;
-  if (us.status === "HALF STAFF" && us.reason) {
-    html += `<br><strong>Reason:</strong> ${us.reason}`;
-  }
+  if (us.status === "HALF STAFF" && us.reason) html += `<br><strong>Reason:</strong> ${us.reason}`;
 
   html += `<hr style="border:0;border-top:1px solid #ccc;margin:10px 0;">`;
 
   html += `<strong>FL FLAG:</strong> ${fl.status}`;
-  if (fl.status === "HALF STAFF" && fl.reason) {
-    html += `<br><strong>Reason:</strong> ${fl.reason}`;
-  }
+  if (fl.status === "HALF STAFF" && fl.reason) html += `<br><strong>Reason:</strong> ${fl.reason}`;
 
   document.getElementById("flag-status").innerHTML = html;
 })();
