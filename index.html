@@ -8,26 +8,37 @@
   <style>
     body {
       margin: 0;
-      padding: 10px;
+      padding: 12px;
       font-family: Arial, Helvetica, sans-serif;
       background: transparent;
     }
 
+    /* MAIN DISPLAY */
     #flag-status {
-      line-height: 1.35;
+      line-height: 1.3;
 
-      /* RESPONSIVE TEXT SIZE */
-      font-size: clamp(18px, 4vw, 36px);
+      /* 🔥 EXTRA LARGE RESPONSIVE TEXT 🔥 */
+      font-size: clamp(28px, 7vw, 64px);
     }
 
     #flag-status strong {
-      font-weight: 700;
+      font-weight: 800;
     }
 
     #flag-status hr {
       border: 0;
-      border-top: 2px solid #ccc;
-      margin: 0.6em 0;
+      border-top: 3px solid #ccc;
+      margin: 0.5em 0;
+    }
+
+    /* FOOTER */
+    #last-updated {
+      margin-top: 10px;
+      text-align: center;
+      color: #666;
+
+      /* smaller, subtle text */
+      font-size: clamp(12px, 1.6vw, 18px);
     }
   </style>
 </head>
@@ -35,6 +46,7 @@
 <body>
 
 <div id="flag-status">Loading flag status…</div>
+<div id="last-updated"></div>
 
 <script>
 (async () => {
@@ -43,6 +55,7 @@
 
   const us = data.us || { status: "UNKNOWN" };
   const fl = data.florida || { status: "UNKNOWN" };
+  const updated = data.updated || null;
 
   function formatDates(start, end) {
     if (!start && !end) return "";
@@ -74,6 +87,12 @@
     render("US FLAG", us) +
     `<hr>` +
     render("FL FLAG", fl);
+
+  if (updated) {
+    const d = new Date(updated);
+    document.getElementById("last-updated").textContent =
+      `Last updated: ${d.toLocaleString()}`;
+  }
 })();
 </script>
 
