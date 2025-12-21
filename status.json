@@ -1,14 +1,18 @@
 {
-  "updated": "2025-12-21T05:34:19.944Z",
+  "updated": "2025-12-21T05:37:24.787Z",
   "us": {
     "status": "HALF STAFF",
     "reason": "As a mark of respect for the victims in Minneapolis, Minnesota",
+    "start": null,
+    "end": null,
     "_scopeUsed": "US",
     "_error": null
   },
   "florida": {
     "status": "FULL STAFF",
     "reason": null,
+    "start": null,
+    "end": null,
     "_error": "[FL] HTTP 429 Too Many Requests {\"message\":\"You have exceeded the rate limit per second for your plan, BASIC, by the API provider\"}"
   }
 }
