@@ -32,3 +32,21 @@
   document.getElementById("flag-status").innerHTML = html;
 })();
 </script>
+
+<script>
+function sendHeight() {
+  const height = document.documentElement.scrollHeight;
+  parent.postMessage(
+    { type: "halfstaff-resize", height },
+    "*"
+  );
+}
+
+// send once on load
+window.addEventListener("load", sendHeight);
+
+// send again if content changes
+const observer = new MutationObserver(sendHeight);
+observer.observe(document.body, { childList: true, subtree: true });
+</script>
+
