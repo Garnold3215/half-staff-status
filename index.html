@@ -1,1 +1,14 @@
+<div id="flag-status">Loading flag status…</div>
 
+<script>
+(async () => {
+  const res = await fetch("./status.json", { cache: "no-store" });
+  const data = await res.json();
+
+  const fl = data.florida;
+
+  document.getElementById("flag-status").innerHTML =
+    `<strong>FL FLAG:</strong> ${fl.status}` +
+    (fl.reason ? `<br><strong>Reason:</strong> ${fl.reason}` : "");
+})();
+</script>
