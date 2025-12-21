@@ -1,7 +1,8 @@
 const fs = require("fs");
 
 async function fetchEvents(scope) {
-  const res = await fetch(`https://flag-status.p.rapidapi.com/events/${scope}`, {
+  const url = `https://flag-status.p.rapidapi.com/events/${scope}`;
+  const res = await fetch(url, {
     headers: {
       "x-rapidapi-host": "flag-status.p.rapidapi.com",
       "x-rapidapi-key": process.env.RAPIDAPI_KEY
@@ -10,7 +11,7 @@ async function fetchEvents(scope) {
 
   if (!res.ok) {
     const text = await res.text().catch(() => "");
-    throw new Error(`HTTP ${res.status} ${res.statusText}\n${text}`);
+    throw new Error(`[${scope}] HTTP ${res.status} ${res.statusText} ${text}`.trim());
   }
 
   return res.json();
@@ -24,10 +25,19 @@ function summarize(events) {
       reason: e.title || e.reason || e.description || e.name || null
     };
   }
-  return {
-    status: "FULL STAFF",
-    reason: null
-  };
+  return { status: "FULL STAFF", reason: null };
+}
+
+async function fetchFirstWorking(scopes) {
+  const errors = [];
+  for (const s of scopes) {
+    try {
+      return { scopeUsed: s, events: await fetchEvents(s), error: null };
+    } catch (e) {
+      errors.push(String(e.message || e));
+    }
+  }
+  return { scopeUsed: null, events: [], error: errors.join(" | ") };
 }
 
 (async () => {
@@ -35,15 +45,23 @@ function summarize(events) {
     throw new Error("Missing RAPIDAPI_KEY secret");
   }
 
-  const [usEvents, flEvents] = await Promise.all([
-    fetchEvents("US"),
-    fetchEvents("FL")
-  ]);
+  // US: try common codes in order. Keep working even if all fail.
+  const usResult = await fetchFirstWorking(["US", "USA"]);
+
+  // FL should always work if state codes work
+  let flEvents = [];
+  let flError = null;
+  try {
+    flEvents = await fetchEvents("FL");
+  } catch (e) {
+    flError = String(e.message || e);
+    flEvents = [];
+  }
 
   const output = {
     updated: new Date().toISOString(),
-    us: summarize(usEvents),
-    florida: summarize(flEvents)
+    us: { ...summarize(usResult.events), _scopeUsed: usResult.scopeUsed, _error: usResult.error },
+    florida: { ...summarize(flEvents), _error: flError }
   };
 
   fs.writeFileSync("status.json", JSON.stringify(output, null, 2));
