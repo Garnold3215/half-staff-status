@@ -22,10 +22,17 @@ function summarize(events) {
     const e = events[0];
     return {
       status: "HALF STAFF",
-      reason: e.title || e.reason || e.description || e.name || null
+      reason: e.title || e.reason || e.description || null,
+      start: e.start || e.startDate || null,
+      end: e.end || e.endDate || null
     };
   }
-  return { status: "FULL STAFF", reason: null };
+  return {
+    status: "FULL STAFF",
+    reason: null,
+    start: null,
+    end: null
+  };
 }
 
 async function fetchFirstWorking(scopes) {
