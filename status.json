@@ -1,17 +1,17 @@
 {
-  "updated": "2026-02-20T06:39:52.721Z",
+  "updated": "2026-02-21T06:28:05.906Z",
   "us": {
-    "status": "UNKNOWN",
+    "status": "FULL STAFF",
     "reason": null,
     "start": null,
     "end": null,
-    "_error": "[US] HTTP 429 Too Many Requests {\"message\":\"You have exceeded the MONTHLY quota for Requests on your current plan, BASIC. Upgrade your plan at https:\\/\\/rapidapi.com\\/aptitudeapps\\/api\\/flag-status\"}"
+    "_error": null
   },
   "florida": {
-    "status": "UNKNOWN",
+    "status": "FULL STAFF",
     "reason": null,
     "start": null,
     "end": null,
-    "_error": "[FL] HTTP 429 Too Many Requests {\"message\":\"You have exceeded the MONTHLY quota for Requests on your current plan, BASIC. Upgrade your plan at https:\\/\\/rapidapi.com\\/aptitudeapps\\/api\\/flag-status\"}"
+    "_error": null
   }
 }
